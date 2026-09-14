@@ -7,9 +7,10 @@ endif
 
 .PHONY: help install dev build preview typecheck clean
 
-# chcp 65001 与 echo 须在同一 cmd 进程中，否则 cmd 默认 GBK 代码页读 UTF-8 中文会乱码
+# 帮助文本经 powershell -EncodedCommand（UTF-16 Base64）输出：
+# 不经过 cmd 字节流，避免 GBK 控制台/PowerShell 解码原生输出时的中文乱码
 help: ## 显示可用命令
-	@chcp 65001>nul&& echo 每日拉伸 · 本地命令&& echo ---------------------------------------&& echo   make install     安装依赖&& echo   make dev         启动开发服务器 (http://localhost:5173/exercises/)&& echo   make build       类型检查 + 生产构建 (输出 dist/)&& echo   make preview     构建并本地预览生产产物&& echo   make typecheck   仅运行 TypeScript 类型检查&& echo   make clean       清理 dist 与 node_modules
+	@powershell -NoProfile -EncodedCommand VwByAGkAdABlAC0ASABvAHMAdAAgACcAz2vlZcliOE8gALcAIAAsZzBXfVTkTicAOwAgAFcAcgBpAHQAZQAtAEgAbwBzAHQAIAAnAC0ALQAtAC0ALQAtAC0ALQAtAC0ALQAtAC0ALQAtAC0ALQAtAC0ALQAtAC0ALQAtAC0ALQAtAC0ALQAtAC0ALQAtAC0ALQAtAC0ALQAtAC0ALQAtACcAOwAgAFcAcgBpAHQAZQAtAEgAbwBzAHQAIAAnACAAIABtAGEAawBlACAAaQBuAHMAdABhAGwAbAAgACAAIAAgACAAiVvFiJ1PVo0nADsAIABXAHIAaQB0AGUALQBIAG8AcwB0ACAAJwAgACAAbQBhAGsAZQAgAGQAZQB2ACAAIAAgACAAIAAgACAAIAAgAC9UqFIAX9FTDWehUmhWIAAoAGgAdAB0AHAAOgAvAC8AbABvAGMAYQBsAGgAbwBzAHQAOgA1ADEANwAzAC8AZQB4AGUAcgBjAGkAcwBlAHMALwApACcAOwAgAFcAcgBpAHQAZQAtAEgAbwBzAHQAIAAnACAAIABtAGEAawBlACAAYgB1AGkAbABkACAAIAAgACAAIAAgACAAe3yLV8Bo5WcgACsAIAAfdadOhGf6XiAAKACTj/pRIABkAGkAcwB0AC8AKQAnADsAIABXAHIAaQB0AGUALQBIAG8AcwB0ACAAJwAgACAAbQBhAGsAZQAgAHAAcgBlAHYAaQBlAHcAIAAgACAAIAAgAIRn+l52XixnMFeEmMiJH3WnTqdOaXInADsAIABXAHIAaQB0AGUALQBIAG8AcwB0ACAAJwAgACAAbQBhAGsAZQAgAHQAeQBwAGUAYwBoAGUAYwBrACAAIAAgAMVO0I9MiCAAVAB5AHAAZQBTAGMAcgBpAHAAdAAgAHt8i1fAaOVnJwA7ACAAVwByAGkAdABlAC0ASABvAHMAdAAgACcAIAAgAG0AYQBrAGUAIABjAGwAZQBhAG4AIAAgACAAIAAgACAAIAAFbgZ0IABkAGkAcwB0ACAADk4gAG4AbwBkAGUAXwBtAG8AZAB1AGwAZQBzACcA
 
 install: ## 安装依赖
 	npm install
