@@ -12,14 +12,19 @@
 
 ## 本地运行
 
+推荐使用 make（`make help` 查看全部命令）：
+
 ```bash
-npm install
-npm run dev        # http://localhost:5173/exercises/
+make install     # 安装依赖
+make dev         # 启动开发服务器 http://localhost:5173/exercises/
+make preview     # 构建并本地预览生产产物
 ```
 
-其他脚本：
+也可直接使用 npm 脚本：
 
 ```bash
+npm install
+npm run dev        # 开发服务器
 npm run typecheck  # TypeScript strict 类型检查
 npm run build      # 生产构建（输出 dist/）
 npm run preview    # 预览生产构建
