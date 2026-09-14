@@ -1,0 +1,142 @@
+[
+  {
+    "id": "standing-quad-stretch",
+    "name": { "zh": "站姿股四头肌拉伸", "en": "Standing Quad Stretch" },
+    "position": "standing",
+    "sides": "both",
+    "duration": 30,
+    "instruction": {
+      "setup": "站立，可扶墙或椅背保持平衡。",
+      "action": "一侧脚跟勾向臀部，同侧手抓住脚踝，双膝并拢，髋部微微前推。",
+      "feel": "大腿前侧与髋屈肌的拉伸感。"
+    },
+    "muscles": [
+      { "id": "quads-left", "intensity": 8 },
+      { "id": "quads-right", "intensity": 8 },
+      { "id": "hip-flexor-left", "intensity": 5 },
+      { "id": "hip-flexor-right", "intensity": 5 }
+    ],
+    "pose": {
+      "start": {},
+      "end": { "legL": { "hip": 0, "knee": -90 }, "armL": { "shoulder": 25, "elbow": -110 } }
+    },
+    "arrows": [{ "anchor": "footL", "dx": -6, "dy": -22 }]
+  },
+  {
+    "id": "standing-hamstring",
+    "name": { "zh": "站姿腘绳肌拉伸", "en": "Standing Hamstring Stretch" },
+    "position": "standing",
+    "sides": "both",
+    "duration": 30,
+    "instruction": {
+      "setup": "站立，一侧脚跟向前伸出，脚尖勾起。",
+      "action": "保持背部平直，从髋部向前倾，双手可扶在前腿大腿上。",
+      "feel": "前腿后侧（腘绳肌）与小腿上段的牵拉。"
+    },
+    "muscles": [
+      { "id": "hamstrings-medial-left", "intensity": 8 },
+      { "id": "hamstrings-lateral-left", "intensity": 7 },
+      { "id": "hamstrings-medial-right", "intensity": 8 },
+      { "id": "hamstrings-lateral-right", "intensity": 7 },
+      { "id": "calves-soleus-left", "intensity": 4 },
+      { "id": "calves-soleus-right", "intensity": 4 }
+    ],
+    "pose": {
+      "start": {},
+      "end": { "torso": 45, "neck": 15, "legL": { "hip": -60, "knee": 0 } }
+    },
+    "arrows": [{ "anchor": "torso", "dx": 14, "dy": 20 }]
+  },
+  {
+    "id": "figure-four",
+    "name": { "zh": "坐姿 4 字臀部拉伸", "en": "Seated Figure-Four" },
+    "position": "seated",
+    "sides": "both",
+    "duration": 30,
+    "instruction": {
+      "setup": "坐在椅子前缘，一侧脚踝搭在对侧膝盖上，呈“4”字。",
+      "action": "保持背部平直，从髋部缓慢向前倾，可轻压抬起的膝盖。",
+      "feel": "抬起腿一侧的臀部深处（梨状肌区域）牵拉。"
+    },
+    "muscles": [
+      { "id": "gluteus-maximus-left", "intensity": 8 },
+      { "id": "gluteus-maximus-right", "intensity": 8 },
+      { "id": "gluteus-medius-left", "intensity": 6 },
+      { "id": "gluteus-medius-right", "intensity": 6 }
+    ],
+    "pose": {
+      "start": {},
+      "end": { "torso": 20, "legL": { "hip": -35, "knee": -60 } }
+    },
+    "arrows": [{ "anchor": "torso", "dx": 12, "dy": 20 }]
+  },
+  {
+    "id": "butterfly",
+    "name": { "zh": "蝴蝶式", "en": "Butterfly Stretch" },
+    "position": "seated",
+    "sides": "none",
+    "duration": 40,
+    "instruction": {
+      "setup": "坐在垫子上，双脚脚掌相对，双手握住脚踝。",
+      "action": "双膝自然向地面下沉，背部平直可微微前倾，不要弹震。",
+      "feel": "大腿内侧（内收肌）与腹股沟的舒展。"
+    },
+    "muscles": [
+      { "id": "adductors-left", "intensity": 8 },
+      { "id": "adductors-right", "intensity": 8 },
+      { "id": "hip-flexor-left", "intensity": 4 },
+      { "id": "hip-flexor-right", "intensity": 4 }
+    ],
+    "pose": {
+      "start": {},
+      "end": { "torso": 15, "legL": { "hip": 35, "knee": -95 }, "legR": { "hip": 40, "knee": -95 } }
+    },
+    "arrows": [{ "anchor": "kneeL", "dx": 0, "dy": 22, "label": "下沉" }]
+  },
+  {
+    "id": "kneeling-hip-flexor",
+    "name": { "zh": "跪姿髋屈肌拉伸", "en": "Kneeling Hip Flexor Stretch" },
+    "position": "kneeling",
+    "sides": "both",
+    "duration": 30,
+    "instruction": {
+      "setup": "一侧膝盖跪垫，另一侧脚向前踩出呈弓步，躯干直立。",
+      "action": "髋部缓慢向前下方沉，后侧臀部微微收紧，手臂可上举加深。",
+      "feel": "后侧髋前部（髋屈肌）的深层拉伸。"
+    },
+    "muscles": [
+      { "id": "hip-flexor-left", "intensity": 8 },
+      { "id": "hip-flexor-right", "intensity": 8 },
+      { "id": "quads-left", "intensity": 5 },
+      { "id": "quads-right", "intensity": 5 }
+    ],
+    "pose": {
+      "start": {},
+      "end": { "legL": { "hip": -92, "knee": -140 }, "armL": { "shoulder": -150 }, "armR": { "shoulder": -150 } }
+    },
+    "arrows": [{ "anchor": "hip", "dx": 20, "dy": 12, "label": "前沉" }]
+  },
+  {
+    "id": "calf-stretch",
+    "name": { "zh": "站姿小腿拉伸", "en": "Standing Calf Stretch" },
+    "position": "standing",
+    "sides": "both",
+    "duration": 30,
+    "instruction": {
+      "setup": "面对墙站立，双手扶墙，一侧腿向后伸直。",
+      "action": "后侧脚跟压实地面，前腿缓慢屈膝，身体整体前倾。",
+      "feel": "后腿小腿肚（腓肠肌）与跟腱的牵拉。"
+    },
+    "muscles": [
+      { "id": "calves-gastroc-medial-left", "intensity": 8 },
+      { "id": "calves-gastroc-medial-right", "intensity": 8 },
+      { "id": "calves-soleus-left", "intensity": 6 },
+      { "id": "calves-soleus-right", "intensity": 6 }
+    ],
+    "pose": {
+      "start": {},
+      "end": { "torso": 12, "legL": { "hip": 14, "knee": 0 }, "legR": { "hip": -35, "knee": 25 }, "armL": { "shoulder": -70 }, "armR": { "shoulder": -70 } }
+    },
+    "arrows": [{ "anchor": "footL", "dx": -14, "dy": 0, "label": "压实" }]
+  }
+]

@@ -1,14 +1,16 @@
 import type { Exercise, Routine } from './types'
-import { neckExercises } from './exercises/neck'
-import { shoulderExercises } from './exercises/shoulders'
-import { torsoExercises } from './exercises/torso'
-import { lowerBodyExercises } from './exercises/lowerBody'
+import neckData from '../data/exercises/neck.json'
+import shoulderData from '../data/exercises/shoulders.json'
+import torsoData from '../data/exercises/torso.json'
+import lowerBodyData from '../data/exercises/lowerBody.json'
+import routinesData from '../data/routines.json'
 
+/** 全部动作（数据见 src/data/exercises/*.json） */
 export const EXERCISES: Exercise[] = [
-  ...neckExercises,
-  ...shoulderExercises,
-  ...torsoExercises,
-  ...lowerBodyExercises,
+  ...(neckData as Exercise[]),
+  ...(shoulderData as Exercise[]),
+  ...(torsoData as Exercise[]),
+  ...(lowerBodyData as Exercise[]),
 ]
 
 const byId = new Map(EXERCISES.map((e) => [e.id, e]))
@@ -19,75 +21,8 @@ export function getExercise(id: string): Exercise {
   return ex
 }
 
-export const ROUTINES: Routine[] = [
-  {
-    id: 'desk-reset',
-    name: { zh: '久坐办公拉伸', en: 'Desk Reset' },
-    scene: { zh: '工位 · 无需器械', en: 'At your desk' },
-    description: '为久坐人群设计的肩颈腰背快速放松，全程可在工位完成。',
-    exerciseIds: [
-      'chin-tuck',
-      'neck-side-tilt',
-      'shoulder-rolls',
-      'cross-body-shoulder',
-      'overhead-triceps',
-      'seated-spinal-twist',
-      'seated-side-bend',
-      'figure-four',
-      'standing-hamstring',
-      'calf-stretch',
-    ],
-  },
-  {
-    id: 'neck-shoulders',
-    name: { zh: '肩颈专项', en: 'Neck & Shoulders' },
-    scene: { zh: '缓解僵硬 · 深度放松', en: 'Deep release' },
-    description: '集中放松颈部与肩部紧张肌群，缓解僵硬与酸痛。',
-    exerciseIds: [
-      'chin-tuck',
-      'neck-flexion',
-      'neck-side-tilt',
-      'neck-rotation',
-      'levator-stretch',
-      'shoulder-rolls',
-      'cross-body-shoulder',
-      'overhead-triceps',
-      'eagle-arms',
-      'thread-the-needle',
-    ],
-  },
-  {
-    id: 'morning-wake',
-    name: { zh: '晨间唤醒', en: 'Morning Wake-up' },
-    scene: { zh: '激活全身 · 提升状态', en: 'Energize' },
-    description: '温和激活脊柱与四肢，唤醒身体，开启清醒一天。',
-    exerciseIds: [
-      'neck-rotation',
-      'shoulder-rolls',
-      'cat-cow',
-      'standing-backbend',
-      'standing-forward-fold',
-      'kneeling-hip-flexor',
-      'standing-quad-stretch',
-      'chest-opener',
-    ],
-  },
-  {
-    id: 'bedtime-unwind',
-    name: { zh: '睡前放松', en: 'Bedtime Unwind' },
-    scene: { zh: '舒缓助眠 · 垫上完成', en: 'Wind down' },
-    description: '缓慢深长的放松序列，帮助身体与神经进入休息状态。',
-    exerciseIds: [
-      'neck-flexion',
-      'cat-cow',
-      'thread-the-needle',
-      'childs-pose',
-      'supine-knee-hug',
-      'butterfly',
-      'seated-spinal-twist',
-    ],
-  },
-]
+/** 全部方案（数据见 src/data/routines.json） */
+export const ROUTINES: Routine[] = routinesData as Routine[]
 
 export function getRoutine(id: string): Routine {
   const r = ROUTINES.find((r) => r.id === id)
