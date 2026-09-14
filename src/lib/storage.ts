@@ -3,7 +3,6 @@
 export interface Prefs {
   theme: 'light' | 'dark'
   muted: boolean
-  reminderMin: 0 | 20 | 30 | 45 | 60
   lastRoutineId: string | null
 }
 
@@ -25,7 +24,6 @@ const KEY = 'stretch-daily:v1'
 export const DEFAULT_PREFS: Prefs = {
   theme: 'light',
   muted: false,
-  reminderMin: 0,
   lastRoutineId: null,
 }
 

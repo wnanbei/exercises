@@ -1,65 +1,51 @@
-import { ArrowLeft, Bell, Moon, Sun, Volume2, VolumeX } from 'lucide-react'
+import { Icon, MOON_PATH, SUN_PATH, SPEAKER_PATH, WAVE_OFF, WAVE_ON } from './Icon'
+import { Tooltip } from './Tooltip'
 
 interface HeaderProps {
-  title: string
   theme: 'light' | 'dark'
   muted: boolean
-  reminderMin: number
-  onBack?: () => void
   onToggleTheme: () => void
   onToggleMute: () => void
-  onReminderChange: (minutes: number) => void
 }
 
-export function Header({
-  title,
-  theme,
-  muted,
-  reminderMin,
-  onBack,
-  onToggleTheme,
-  onToggleMute,
-  onReminderChange,
-}: HeaderProps) {
+export function Header({ theme, muted, onToggleTheme, onToggleMute }: HeaderProps) {
   return (
-    <header className="app-header">
-      <div className="header-left">
-        {onBack && (
-          <button className="icon-btn" onClick={onBack} aria-label="返回方案选择">
-            <ArrowLeft size={19} />
-          </button>
-        )}
-        <span className="header-title">{title}</span>
-      </div>
-      <div className="header-actions">
-        <label className="reminder">
-          <Bell size={16} aria-hidden />
-          <select
-            value={reminderMin}
-            onChange={(e) => onReminderChange(Number(e.target.value))}
-            aria-label="定时提醒"
+    <header className="ds-header">
+      <span className="ds-brand">每日拉伸 · Stretch Daily</span>
+
+      <div className="ds-header__actions">
+        <Tooltip
+          placement="bottom"
+          label={
+            muted
+              ? '声音已关 — 开启背景音乐与提醒音效'
+              : '声音已开 — 舒缓背景音乐，倒数 5 秒与新动作提醒'
+          }
+        >
+          <button
+            onClick={onToggleMute}
+            aria-label={muted ? '开启提示音' : '关闭提示音'}
+            aria-pressed={!muted}
+            className="ds-round-btn ds-hoverable"
           >
-            <option value={0}>提醒关</option>
-            <option value={20}>20 分钟</option>
-            <option value={30}>30 分钟</option>
-            <option value={45}>45 分钟</option>
-            <option value={60}>60 分钟</option>
-          </select>
-        </label>
-        <button
-          className="icon-btn"
-          onClick={onToggleMute}
-          aria-label={muted ? '取消静音' : '静音'}
-        >
-          {muted ? <VolumeX size={19} /> : <Volume2 size={19} />}
-        </button>
-        <button
-          className="icon-btn"
-          onClick={onToggleTheme}
-          aria-label={theme === 'dark' ? '切换亮色主题' : '切换暗色主题'}
-        >
-          {theme === 'dark' ? <Sun size={19} /> : <Moon size={19} />}
-        </button>
+            <Icon size={17} stroke="var(--c-ink2)">
+              <path d={SPEAKER_PATH} fill="var(--c-ink2)" stroke="none" />
+              <path d={muted ? WAVE_OFF : WAVE_ON} />
+            </Icon>
+          </button>
+        </Tooltip>
+
+        <Tooltip placement="bottom" label={theme === 'dark' ? '切换到浅色' : '切换到深色'}>
+          <button
+            onClick={onToggleTheme}
+            aria-label={theme === 'dark' ? '切换到浅色主题' : '切换到深色主题'}
+            className="ds-round-btn ds-hoverable"
+          >
+            <Icon size={17} stroke="var(--c-ink2)">
+              <path d={theme === 'dark' ? SUN_PATH : MOON_PATH} />
+            </Icon>
+          </button>
+        </Tooltip>
       </div>
     </header>
   )

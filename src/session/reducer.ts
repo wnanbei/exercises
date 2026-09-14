@@ -2,65 +2,80 @@ import type { Routine } from '../domain/types'
 import { getExercise } from '../domain/routines'
 
 export type Side = 'left' | 'right' | 'none'
-export type SessionStatus = 'idle' | 'holding' | 'paused' | 'done'
+
+/**
+ * `idle`     — 未开始；remaining 为当前段完整时长
+ * `holding`  — 倒计时中，以墙上时钟 endsAt 为准
+ * `paused`   — 保持中途暂停；remaining 为冻结的剩余毫秒
+ * `resting`  — 两段之间的短暂间隙，结束后自动开始下一段
+ * `finished` — 方案最后一个动作完成
+ */
+export type Phase = 'idle' | 'holding' | 'paused' | 'resting' | 'finished'
 
 export interface SessionState {
   routine: Routine
-  status: SessionStatus
   index: number
   side: Side
-  /** 运行中：当前段的墙上时钟截止时间（epoch ms） */
+  phase: Phase
+  /** 当前段剩余毫秒（holding 时以 endsAt 重算） */
+  remaining: number
+  /** holding 期间的墙上时钟截止时间，其余为 null */
   endsAt: number | null
-  /** 暂停时冻结的剩余毫秒 */
-  remainingMs: number
+  /** 间隙类型：换边短一些，换动作略长 */
+  restKind: 'side' | 'next' | null
   /** 已完成段 key：`${index}:${side}` */
   done: string[]
-  /** 当前段是否已播放半程提示 */
-  halfPlayed: boolean
+  /** 当前段倒数第 5 秒提示是否已播放 */
+  endingSoonFired: boolean
 }
 
 export type SessionAction =
-  | { type: 'start' }
-  | { type: 'pause' }
-  | { type: 'resume' }
-  | { type: 'advance' } // 当前段到时：换边 / 下一动作 / 完成
-  | { type: 'next' }
-  | { type: 'prev' }
-  | { type: 'jump'; index: number }
-  | { type: 'setRoutine'; routine: Routine }
-  | { type: 'halfPlayed' }
+  | { type: 'start'; now: number }
+  | { type: 'pause'; now: number }
+  | { type: 'resume'; now: number }
+  | { type: 'tick'; now: number }
+  | { type: 'endingSoonFired' }
+  | { type: 'expire'; now: number }
+  | { type: 'restElapsed'; now: number }
+  | { type: 'goto'; index: number; now: number }
+  | { type: 'resetProgress' }
+
+/** 换边间隙 */
+export const SIDE_REST_MS = 1600
+/** 换动作间隙 */
+export const NEXT_REST_MS = 1800
+
+export function sideOf(routine: Routine, index: number): Side {
+  return getExercise(routine.exerciseIds[index]).sides === 'both' ? 'left' : 'none'
+}
+
+export function segmentMs(routine: Routine, index: number): number {
+  return getExercise(routine.exerciseIds[index]).duration * 1000
+}
 
 export function initSession(routine: Routine): SessionState {
   return {
     routine,
-    status: 'idle',
     index: 0,
     side: sideOf(routine, 0),
+    phase: 'idle',
+    remaining: segmentMs(routine, 0),
     endsAt: null,
-    remainingMs: segmentMs(routine, 0),
+    restKind: null,
     done: [],
-    halfPlayed: false,
+    endingSoonFired: false,
   }
 }
 
-function sideOf(routine: Routine, index: number): Side {
-  return getExercise(routine.exerciseIds[index]).sides === 'both' ? 'left' : 'none'
-}
-
-function segmentMs(routine: Routine, index: number): number {
-  return getExercise(routine.exerciseIds[index]).duration * 1000
-}
-
-function startSegment(state: SessionState, index: number, side: Side, now: number): SessionState {
-  const ms = segmentMs(state.routine, index)
+function beginHold(state: SessionState, now: number): SessionState {
+  const ms = segmentMs(state.routine, state.index)
   return {
     ...state,
-    status: 'holding',
-    index,
-    side,
+    phase: 'holding',
+    remaining: ms,
     endsAt: now + ms,
-    remainingMs: ms,
-    halfPlayed: false,
+    restKind: null,
+    endingSoonFired: false,
   }
 }
 
@@ -70,95 +85,101 @@ function markDone(state: SessionState): string[] {
 }
 
 export function sessionReducer(s: SessionState, a: SessionAction): SessionState {
-  const now = Date.now()
   switch (a.type) {
     case 'start':
-      if (s.status === 'idle' || s.status === 'done') {
-        const fresh = startSegment({ ...s, done: [], index: 0 }, 0, sideOf(s.routine, 0), now)
-        return fresh
-      }
-      return s.status === 'paused'
-        ? { ...s, status: 'holding', endsAt: now + s.remainingMs }
-        : s
+      if (s.phase !== 'idle') return s
+      return beginHold(s, a.now)
 
-    case 'pause':
-      if (s.status !== 'holding' || s.endsAt == null) return s
-      return { ...s, status: 'paused', remainingMs: Math.max(0, s.endsAt - now), endsAt: null }
+    case 'pause': {
+      if (s.phase !== 'holding' || s.endsAt === null) return s
+      return {
+        ...s,
+        phase: 'paused',
+        remaining: Math.max(0, s.endsAt - a.now),
+        endsAt: null,
+      }
+    }
 
     case 'resume':
-      return s.status === 'paused'
-        ? { ...s, status: 'holding', endsAt: now + s.remainingMs }
+      return s.phase === 'paused'
+        ? { ...s, phase: 'holding', endsAt: a.now + s.remaining }
         : s
 
-    case 'advance': {
-      if (s.status !== 'holding') return s
+    case 'tick': {
+      if (s.phase !== 'holding' || s.endsAt === null) return s
+      return { ...s, remaining: Math.max(0, s.endsAt - a.now) }
+    }
+
+    case 'endingSoonFired':
+      return { ...s, endingSoonFired: true }
+
+    case 'expire': {
+      if (s.phase !== 'holding') return s
       const ex = getExercise(s.routine.exerciseIds[s.index])
       const done = markDone(s)
+
+      // 双侧动作先做左侧，左侧到时后换右侧再计一次
       if (ex.sides === 'both' && s.side === 'left') {
-        return { ...startSegment({ ...s, done }, s.index, 'right', now) }
+        return {
+          ...s,
+          done,
+          side: 'right',
+          phase: 'resting',
+          restKind: 'side',
+          remaining: segmentMs(s.routine, s.index),
+          endsAt: null,
+          endingSoonFired: false,
+        }
       }
-      if (s.index < s.routine.exerciseIds.length - 1) {
-        const next = s.index + 1
-        return startSegment({ ...s, done }, next, sideOf(s.routine, next), now)
-      }
-      return { ...s, done, status: 'done', endsAt: null, remainingMs: 0 }
-    }
 
-    case 'next': {
-      if (s.index >= s.routine.exerciseIds.length - 1) {
-        return { ...s, done: markDone(s), status: 'done', endsAt: null, remainingMs: 0 }
+      const isLast = s.index >= s.routine.exerciseIds.length - 1
+      if (isLast) {
+        return { ...s, done, phase: 'finished', remaining: 0, endsAt: null }
       }
+
       const next = s.index + 1
-      const base = { ...s, done: s.status === 'holding' ? markDone(s) : s.done }
-      if (s.status === 'paused' || s.status === 'idle') {
-        return {
-          ...base,
-          index: next,
-          side: sideOf(s.routine, next),
-          remainingMs: segmentMs(s.routine, next),
-          halfPlayed: false,
-          status: 'paused',
-        }
+      return {
+        ...s,
+        done,
+        index: next,
+        side: sideOf(s.routine, next),
+        phase: 'resting',
+        restKind: 'next',
+        remaining: segmentMs(s.routine, next),
+        endsAt: null,
+        endingSoonFired: false,
       }
-      return startSegment(base, next, sideOf(s.routine, next), now)
     }
 
-    case 'prev': {
-      const prevIdx = Math.max(0, s.index - 1)
-      if (s.status === 'paused' || s.status === 'idle') {
-        return {
-          ...s,
-          index: prevIdx,
-          side: sideOf(s.routine, prevIdx),
-          remainingMs: segmentMs(s.routine, prevIdx),
-          halfPlayed: false,
-          status: 'paused',
-        }
+    case 'restElapsed':
+      return s.phase === 'resting' ? beginHold(s, a.now) : s
+
+    case 'goto': {
+      const total = s.routine.exerciseIds.length
+      const index = Math.min(Math.max(0, a.index), total - 1)
+      const wasActive = s.phase === 'holding' || s.phase === 'resting'
+      const next: SessionState = {
+        ...s,
+        index,
+        side: sideOf(s.routine, index),
+        phase: 'idle',
+        remaining: segmentMs(s.routine, index),
+        endsAt: null,
+        restKind: null,
+        endingSoonFired: false,
       }
-      return startSegment(s, prevIdx, sideOf(s.routine, prevIdx), now)
+      // 会话进行中跳转则保持推进； idle/paused/finished 时跳转后等待开始
+      return wasActive ? beginHold(next, a.now) : next
     }
 
-    case 'jump': {
-      const idx = Math.min(Math.max(0, a.index), s.routine.exerciseIds.length - 1)
-      const status = s.status === 'idle' || s.status === 'done' ? 'paused' : s.status
-      if (status === 'paused') {
-        return {
-          ...s,
-          index: idx,
-          side: sideOf(s.routine, idx),
-          remainingMs: segmentMs(s.routine, idx),
-          halfPlayed: false,
-          status: 'paused',
-        }
+    case 'resetProgress':
+      return {
+        ...s,
+        done: [],
+        phase: s.phase === 'finished' ? 'idle' : s.phase,
+        remaining:
+          s.phase === 'finished' ? segmentMs(s.routine, s.index) : s.remaining,
       }
-      return startSegment(s, idx, sideOf(s.routine, idx), now)
-    }
-
-    case 'setRoutine':
-      return initSession(a.routine)
-
-    case 'halfPlayed':
-      return { ...s, halfPlayed: true }
 
     default:
       return s

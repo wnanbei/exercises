@@ -1,0 +1,542 @@
+/* ==========================================================================
+   编辑部式布局（对齐 stretch-daily）：
+   字阶、不对称展开、发丝线分隔——用印品质感取代卡片堆叠。
+   ========================================================================== */
+
+/* --- 交互微效 ------------------------------------------------------------ */
+
+.ds-hoverable {
+  transition:
+    border-color 160ms ease,
+    background 160ms ease,
+    color 160ms ease,
+    opacity 160ms ease;
+}
+.ds-hoverable:hover {
+  border-color: var(--c-line2);
+  background: var(--c-hover);
+}
+
+.ds-primary {
+  transition:
+    opacity 160ms ease,
+    transform 160ms ease;
+}
+.ds-primary:hover {
+  opacity: 0.92;
+}
+.ds-primary:active {
+  transform: scale(0.97);
+}
+
+.ds-quiet {
+  transition: color 160ms ease;
+}
+.ds-quiet:hover {
+  color: var(--c-ink);
+}
+
+/* --- 顶栏 ---------------------------------------------------------------- */
+
+.ds-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 22px var(--gutter) 18px;
+  max-width: var(--measure);
+  margin: 0 auto;
+}
+
+.ds-brand {
+  font-family: var(--font-serif);
+  font-size: 19px;
+  letter-spacing: -0.01em;
+  color: var(--c-ink);
+  white-space: nowrap;
+}
+
+.ds-header__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ds-round-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  display: grid;
+  place-items: center;
+  color: var(--c-ink2);
+}
+
+/* --- 方案选择条 ---------------------------------------------------------- */
+
+.ds-rail {
+  max-width: var(--measure);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+.ds-rail__inner {
+  display: flex;
+  align-items: stretch;
+  gap: clamp(10px, 2vw, 20px);
+  padding-block: 10px;
+  border-top: 1px solid var(--c-line);
+  border-bottom: 1px solid var(--c-line);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.ds-rail__inner::-webkit-scrollbar {
+  display: none;
+}
+
+.ds-rail__label {
+  flex: 0 0 auto;
+  align-self: center;
+  padding-right: 4px;
+}
+
+.ds-rail__item {
+  flex: 1 0 auto;
+  min-width: 128px;
+  display: grid;
+  gap: 2px;
+  padding: 8px 14px;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  text-align: left;
+}
+
+.ds-rail__name {
+  font-family: var(--font-serif);
+  font-size: 16px;
+  color: var(--c-ink);
+  white-space: nowrap;
+}
+
+.ds-rail__meta {
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--c-mute);
+  white-space: nowrap;
+}
+
+.ds-rail__item--active {
+  background: var(--c-card);
+  border-color: var(--c-line2);
+  box-shadow: var(--shadow-card);
+}
+
+/* --- 字阶 ---------------------------------------------------------------- */
+
+.ds-eyebrow {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--c-mute);
+}
+
+.ds-title {
+  margin: 0.28em 0 0;
+  font-family: var(--font-serif);
+  font-weight: 400;
+  /* 页面上唯一真正大的元素，层级由此确立 */
+  font-size: clamp(2.2rem, 6vw, 3.9rem);
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+  color: var(--c-ink);
+}
+
+.ds-target {
+  margin: 0.7em 0 0;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: clamp(1rem, 2vw, 1.2rem);
+  line-height: 1.4;
+  color: var(--c-accent);
+}
+
+/* --- 展开（spread） ------------------------------------------------------- */
+
+.ds-main {
+  max-width: var(--measure);
+  margin: 0 auto;
+  padding: 0 var(--gutter) 56px;
+}
+
+.ds-spread {
+  display: grid;
+  /* 左列题注窄栏，右侧小人与肌肉图板并排，读数行通栏在下 */
+  grid-template-columns: minmax(0, 0.7fr) minmax(0, 1.3fr);
+  grid-template-areas:
+    'head figure'
+    'readout readout';
+  gap: clamp(20px, 4vw, 48px) clamp(24px, 5vw, 64px);
+  align-items: end;
+  padding-block: clamp(16px, 3vw, 32px);
+}
+
+.ds-spread__head {
+  grid-area: head;
+}
+
+.ds-spread__figure {
+  grid-area: figure;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: clamp(14px, 2.5vw, 20px);
+  min-width: 0;
+}
+
+.ds-stage {
+  flex: 0 1 240px;
+  min-width: 160px;
+  transition: transform 320ms var(--ease-out);
+}
+
+.ds-stage > svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.ds-spread__maps {
+  margin: 0;
+  flex: 0 1 auto;
+  max-width: 100%;
+  display: grid;
+  gap: 6px;
+  padding: 12px 12px 8px;
+  border-radius: 14px;
+  background: var(--c-sunk);
+}
+
+.ds-caption {
+  display: flex;
+  justify-content: space-around;
+  gap: 8px;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--c-mute);
+}
+
+/* --- 读数行（倒计时 + 进度 + 控制） ---------------------------------------- */
+
+.ds-readout {
+  grid-area: readout;
+  display: flex;
+  align-items: center;
+  gap: clamp(16px, 4vw, 40px);
+  padding-top: clamp(16px, 3vw, 28px);
+  /* 发丝线代替卡片边缘：页面读作印刷品而非面板 */
+  border-top: 1px solid var(--c-line);
+}
+
+.ds-readout__count {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  flex: 0 0 auto;
+  min-width: 2.2em;
+}
+
+.ds-count {
+  font-family: var(--font-serif);
+  font-weight: 300;
+  font-size: clamp(2.6rem, 6vw, 3.6rem);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  color: var(--c-ink);
+}
+
+.ds-count__unit {
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--c-mute);
+}
+
+.ds-readout__meter {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.ds-meter {
+  height: 3px;
+  border-radius: 999px;
+  background: var(--c-line);
+  overflow: hidden;
+}
+
+.ds-meter__fill {
+  height: 100%;
+  background: var(--c-accent);
+  border-radius: 999px;
+  transition: width 140ms linear;
+}
+
+.ds-side {
+  margin: 0;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--c-mute);
+}
+
+.ds-readout__controls {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ds-side-btn {
+  width: 52px;
+  height: 52px;
+  border-radius: 999px;
+  border: 1px solid var(--c-line);
+  display: grid;
+  place-items: center;
+  color: var(--c-ink2);
+}
+
+.ds-play-btn {
+  width: 62px;
+  height: 62px;
+  border-radius: 999px;
+  background: var(--c-accent);
+  color: var(--c-onaccent);
+  display: grid;
+  place-items: center;
+  box-shadow: var(--shadow-lift);
+}
+
+/* --- 缩略图带 -------------------------------------------------------------- */
+
+.ds-thumbs {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding-block: clamp(14px, 3vw, 22px);
+  border-top: 1px solid var(--c-line);
+  list-style: none;
+}
+
+.ds-thumb {
+  position: relative;
+  width: clamp(52px, 9vw, 66px);
+  height: clamp(52px, 9vw, 66px);
+  border-radius: 12px;
+  padding: 4px;
+  background: transparent;
+  border: 1px solid transparent;
+  transition:
+    background 180ms ease,
+    border-color 180ms ease,
+    transform 180ms var(--ease-out);
+}
+
+.ds-thumb:hover {
+  background: var(--c-hover);
+  transform: translateY(-2px);
+}
+
+.ds-thumb--active {
+  background: var(--c-card);
+  border-color: var(--c-line2);
+  box-shadow: var(--shadow-card);
+}
+
+.ds-thumb svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.ds-thumb__check {
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  background: var(--c-accent);
+  display: grid;
+  place-items: center;
+}
+
+/* --- 说明（可折叠） --------------------------------------------------------- */
+
+.ds-notes {
+  border-top: 1px solid var(--c-line);
+  padding-top: 18px;
+}
+
+.ds-notes__toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  width: 100%;
+  padding: 0 0 4px;
+  text-align: left;
+  color: var(--c-mute);
+}
+
+.ds-notes__chev {
+  display: grid;
+  place-items: center;
+  transition: transform 240ms var(--ease-out);
+}
+
+.ds-notes__body {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 0.65fr);
+  gap: clamp(20px, 4vw, 52px);
+  align-items: start;
+  padding-top: 18px;
+}
+
+/* author display 会覆盖 hidden 的 UA 样式，需显式补回 */
+.ds-notes__body[hidden] {
+  display: none;
+}
+
+.ds-notes__prose {
+  min-width: 0;
+  /* 舒适的阅读行长 */
+  max-width: 46ch;
+}
+
+.ds-lede {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-size: clamp(1.12rem, 2.2vw, 1.4rem);
+  line-height: 1.55;
+  color: var(--c-ink2);
+  text-wrap: pretty;
+}
+
+.ds-how {
+  margin: 1.1em 0 0;
+  font-size: 0.9rem;
+  line-height: 1.65;
+  color: var(--c-mute);
+  text-wrap: pretty;
+}
+
+.ds-how strong {
+  color: var(--c-ink2);
+  font-weight: 600;
+}
+
+/* 与舞台区图板同规格：收缩到内容宽度并居中，内边距与圆角一致 */
+.ds-notes__figure {
+  margin: 0;
+  justify-self: center;
+  display: grid;
+  gap: 6px;
+  padding: 12px 12px 8px;
+  border-radius: 14px;
+  background: var(--c-sunk);
+}
+
+.ds-notes__maps {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+/* --- 肌肉图 ---------------------------------------------------------------- */
+
+.ds-map-pair {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+/* 舞台与说明面板共用同一图示尺寸 */
+.ds-map {
+  width: 112px;
+  max-width: 100%;
+  margin: 0 auto;
+  line-height: 0;
+}
+
+.ds-map-caption {
+  margin-top: 6px;
+  text-align: center;
+  font-size: 11px;
+  color: var(--c-mute);
+  min-height: 1.5em;
+}
+
+/* --- 页脚 ------------------------------------------------------------------ */
+
+.ds-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: clamp(14px, 3vw, 22px);
+  padding-top: 20px;
+  border-top: 1px solid var(--c-line);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--c-mute);
+}
+
+/* --- 窄屏 ------------------------------------------------------------------ */
+
+@media (max-width: 760px) {
+  .ds-spread {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      'head'
+      'figure'
+      'readout';
+    text-align: left;
+  }
+
+  .ds-spread__figure {
+    justify-content: center;
+    gap: 14px;
+  }
+
+  /* 窄屏上小人是主体，肌肉图板换行居中 */
+  .ds-stage {
+    flex-basis: 260px;
+  }
+
+  .ds-readout {
+    flex-wrap: wrap;
+    row-gap: 18px;
+  }
+
+  .ds-readout__controls {
+    order: -1;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .ds-notes__body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
