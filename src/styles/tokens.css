@@ -1,0 +1,61 @@
+:root {
+  /* 主色（草木绿） */
+  --c-primary: #2f6e5f;
+  --c-primary-strong: #1f4e43;
+  --c-primary-soft: #3a8570;
+  --c-accent: #4c9a82;
+
+  /* 功能色 */
+  --c-amber: #d97706;
+  --c-coral: #e76f51;
+  --c-error: #c0392b;
+
+  /* 亮色主题 */
+  --bg-page: #faf8f4;
+  --bg-surface: #ffffff;
+  --bg-sunken: #f3efe8;
+  --ink: #292524;
+  --ink-soft: #78716c;
+  --line: #e7e0d5;
+  --shadow: 0 1px 2px rgba(41, 37, 36, 0.05), 0 8px 24px rgba(41, 37, 36, 0.06);
+  --shadow-lift: 0 2px 4px rgba(41, 37, 36, 0.06), 0 14px 34px rgba(31, 78, 67, 0.14);
+
+  /* 字体 */
+  --font-sans: 'Karla', 'Noto Sans SC', system-ui, -apple-system, sans-serif;
+  --fs-title: 30px;
+  --fs-subtitle: 18px;
+  --fs-body: 15px;
+  --fs-small: 13px;
+
+  /* 间距与圆角 */
+  --r-sm: 8px;
+  --r-md: 14px;
+  --r-lg: 20px;
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 24px;
+  --sp-6: 32px;
+
+  /* 动效 */
+  --dur-fast: 160ms;
+  --dur-med: 300ms;
+  --dur-slow: 800ms;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+[data-theme='dark'] {
+  --c-primary: #3a8570;
+  --c-primary-strong: #4c9a82;
+  --c-primary-soft: #2f6e5f;
+
+  --bg-page: #1a1815;
+  --bg-surface: #232019;
+  --bg-sunken: #151310;
+  --ink: #ede9e3;
+  --ink-soft: #a39e96;
+  --line: #38322a;
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.35);
+  --shadow-lift: 0 2px 4px rgba(0, 0, 0, 0.35), 0 14px 34px rgba(0, 0, 0, 0.5);
+}

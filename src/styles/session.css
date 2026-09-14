@@ -1,0 +1,116 @@
+/* 练习屏布局 */
+.session {
+  flex: 1;
+  width: 100%;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: var(--sp-4) var(--sp-5) var(--sp-5);
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  grid-template-areas:
+    'progress progress'
+    'main side'
+    'controls controls';
+  gap: var(--sp-4);
+  align-content: start;
+}
+
+.session-progress {
+  grid-area: progress;
+  height: 5px;
+  border-radius: 999px;
+  background: var(--bg-sunken);
+  overflow: hidden;
+}
+
+.session-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--c-primary-soft), var(--c-primary));
+  border-radius: 999px;
+  transition: width var(--dur-med) var(--ease-out);
+}
+
+.session-main {
+  grid-area: main;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  min-width: 0;
+}
+
+.session-side {
+  grid-area: side;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  min-width: 0;
+}
+
+.controls {
+  grid-area: controls;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-4);
+  padding: var(--sp-2) 0;
+}
+
+.controls-hint {
+  position: absolute;
+  right: var(--sp-5);
+  font-size: 12px;
+  color: var(--ink-soft);
+}
+
+.controls {
+  position: relative;
+}
+
+/* 平板：单栏，说明与肌肉图并排 */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .session {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      'progress'
+      'main'
+      'side'
+      'controls';
+  }
+  .session-side {
+    flex-direction: row;
+    align-items: stretch;
+  }
+  .session-side > * {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+/* 移动：单列纵向 + 吸底控制条 */
+@media (max-width: 767px) {
+  .session {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      'progress'
+      'main'
+      'side'
+      'controls';
+    padding: var(--sp-3) var(--sp-3) calc(104px + env(safe-area-inset-bottom, 0px));
+  }
+  .controls {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: 0;
+    padding: var(--sp-3) var(--sp-3)
+      calc(var(--sp-3) + env(safe-area-inset-bottom, 0px));
+    background: color-mix(in srgb, var(--bg-page) 88%, transparent);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid var(--line);
+    z-index: 20;
+  }
+  .controls-hint {
+    display: none;
+  }
+}
