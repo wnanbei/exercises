@@ -7,15 +7,9 @@ endif
 
 .PHONY: help install dev build preview typecheck clean
 
+# chcp 65001 与 echo 须在同一 cmd 进程中，否则 cmd 默认 GBK 代码页读 UTF-8 中文会乱码
 help: ## 显示可用命令
-	@echo 每日拉伸 · 本地命令
-	@echo ---------------------------------------
-	@echo   make install     安装依赖
-	@echo   make dev         启动开发服务器 (http://localhost:5173/exercises/)
-	@echo   make build       类型检查 + 生产构建 (输出 dist/)
-	@echo   make preview     构建并本地预览生产产物
-	@echo   make typecheck   仅运行 TypeScript 类型检查
-	@echo   make clean       清理 dist 与 node_modules
+	@chcp 65001>nul&& echo 每日拉伸 · 本地命令&& echo ---------------------------------------&& echo   make install     安装依赖&& echo   make dev         启动开发服务器 (http://localhost:5173/exercises/)&& echo   make build       类型检查 + 生产构建 (输出 dist/)&& echo   make preview     构建并本地预览生产产物&& echo   make typecheck   仅运行 TypeScript 类型检查&& echo   make clean       清理 dist 与 node_modules
 
 install: ## 安装依赖
 	npm install
